@@ -1,0 +1,12 @@
+\section{Conclusion}
+\label{sec:conclusion}
+In this paper, we introduced the notion of \textit{local computation} complexity into the $k$-machine model. This notion is important to analyze the performance of large-scale computations in a distributed model, since local computation cost can be a significant factor
+in determining the overall (wall-clock) time needed for the algorithm to finish. 
+
+To illustrate the importance of studying such a metric, we analyzed several algorithms in the $k$-machine model and showed that algorithms with similar communication complexities may have vastly different local computation complexities. Thus, we believe that the use of this metric will help the community to better understand the performance of distributed algorithms in practice. 
+
+As part of future work, we plan to implement the algorithms that we analyze in this paper and study their performance in practice. As mentioned in \cref{sec:intro}, we have implemented $k$-machine algorithms for PageRank using the MPI framework.
+We plan to do a similar implementation of these algorithms.
+
+It will be interesting to  analyze $k$-machine algorithms (as well as MPC algorithms) using this metric
+for other problems.
