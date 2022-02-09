@@ -16,8 +16,8 @@ individual machines also contributes to the overall time complexity of the
 distributed algorithm. We posit a complexity measure called the *local
 computation cost* (denoted $$T_{\ell}$$) that measures the worst-case local
 computation cost among the machines.  A lower bound for $$T_{\ell}$$
-in our model is $$\Omega\left(\sfrac{(m+n)}{k} + \Delta + k\right)$$, while a
-lower bound on $$T_c$$ is $$\Omega\left(\sfrac{n}{k^2}\right)$$ [Klauck et al., SODA 2015],
+in our model is $$\Omega\left((m+n) / k + \Delta + k\right)$$, while a
+lower bound on $$T_c$$ is $$\Omega\left(n / k^2\right)$$ [Klauck et al., SODA 2015],
 where $$m$$ is the number of edges and $$\Delta$$ is the maximum degree. Prior
 algorithms for connectivity and MST in the $$k$$-machine model [Klauck et al.,
 SODA 2015, Pandurangan et al., SPAA 2016] do not take into account local
@@ -29,16 +29,16 @@ MST and analyze their performance with respect to *both* the computation and
 communication cost. In particular, we analyze a well-studied flooding
 algorithm for connectivity and connected components that takes
 $$\tilde{\mathcal{O}}\left(n/k + D\right)$$ rounds and $$\tilde{\mathcal{O}}\left(m / k + \Delta + k\right)$$
-local computation time.[^$\tilde{\mathcal{O}}$ notation hides
+local computation time.^[$\tilde{\mathcal{O}}$ notation hides
 $$\operatorname{polylog}(n)$$ multiplicative and additive factors.] We then
 present a deterministic filtering algorithm that has an improved
-round complexity of $$\tilde{\mathcal{O}}\left(\sfrac{n}{k}\right)$$ but local computation
-complexity of $$\tilde{\mathcal{O}}\left(\sfrac{m}{k} + n\right)$$. Next, we present two
+round complexity of $$\tilde{\mathcal{O}}\left(n / k\right)$$ but local computation
+complexity of $$\tilde{\mathcal{O}}\left(m / k + n\right)$$. Next, we present two
 *deterministic* algorithms which are increasingly sophisticated
 implementations of the classical Bor\r{u}vka's algorithm, the last of which
-has round complexity $$\tilde{\mathcal{O}}\left(\sfrac{n}{k}\right)$$ and local computation
-complexity $$\tilde{\mathcal{O}}\left(\sfrac{(m + n)}{k} + \Delta + k\right)$$. We finally
+has round complexity $$\tilde{\mathcal{O}}\left(n / k\right)$$ and local computation
+complexity $$\tilde{\mathcal{O}}\left((m + n) / k + \Delta + k\right)$$. We finally
 present a *randomized* algorithm to find connected components with
-round complexity $$\tilde{\mathcal{O}}\left(\sfrac{n}{k^2}\right)$$ and local computation
-complexity $$\tilde{\mathcal{O}}\left(\sfrac{(m + n)}{k} + \Delta + k\right)$$ that are
+round complexity $$\tilde{\mathcal{O}}\left(n / k^2\right)$$ and local computation
+complexity $$\tilde{\mathcal{O}}\left((m + n) / k + \Delta + k\right)$$ that are
 both essentially optimal (up to polylogarithmic factors).
