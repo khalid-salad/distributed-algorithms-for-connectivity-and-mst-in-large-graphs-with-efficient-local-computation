@@ -1,4 +1,3 @@
-{% include mathjax.html %}
 # Abstract
 We study distributed algorithms for large-scale graphs, focusing on the
 fundamental problems of connectivity and minimum spanning tree (MST). We
