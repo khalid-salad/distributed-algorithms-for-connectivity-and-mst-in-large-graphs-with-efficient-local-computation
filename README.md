@@ -41,5 +41,4 @@ round complexity $$\tilde{\mathcal{O}}\left(n / k^2\right)$$ and local computati
 complexity $$\tilde{\mathcal{O}}\left((m + n) / k + \Delta + k\right)$$ that are
 both essentially optimal (up to polylogarithmic factors).
 
-[^1]: $$\tilde{\mathcal{O}}$$ notation hides $$\operatorname{polylog}(n)$$ multiplicative 
-and additive factors.
+[^1]: $$\tilde{\mathcal{O}}$$ notation hides $$\operatorname{polylog}(n)$$ multiplicative and additive factors.
