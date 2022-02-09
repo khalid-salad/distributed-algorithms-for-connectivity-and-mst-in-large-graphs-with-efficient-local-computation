@@ -1,0 +1,98 @@
+\section{An Almost-Optimal Randomized  Algorithm}\label{sec:kmachine-mst-optimal}
+In this section, we analyze the algorithm for finding connected components presented in~\cite{topc18}.\footnote{An extension  of this algorithm gives an MST algorithm and can be similarly modified as discussed here.} This algorithm is optimal (up to polylogarithmic factors) with respect
+to the round complexity (requiring $\softO{n/k^2}$ rounds), but has  $\softO{n^2}$
+local computation complexity. However, this algorithm is somewhat more involved than the prior algorithms discussed. For self-containment, we give an overview of the algorithm
+of \cite{topc18} and point out why that algorithm has high local computation cost
+and discuss the modification needed to obtain the local computation complexity of $\softO{\sfrac{(m+n)}{k} + \Delta + k}$  while keeping the same round complexity. Thus this modified algorithms is essentially optimal (up to polylogarithmic factors)
+in both $T_c$ and $T_{\ell}$.
+
+\textbf{Overview.}
+The algorithm of \cite{topc18} also follows a Bor\r{u}vka-style strategy~\cite{Boruvka26}, i.e., it repeatedly merges
+adjacent \emph{components} of the input graph $G$, which are connected subgraphs of $G$, to form
+larger (connected) components. The output of each of these phases is a \emph{labeling} of the nodes of $G$
+such that nodes that belong to the same current component have the same label. At the beginning of
+the first phase, each node is labeled with its own unique ID, forms a distinct component, and is also the
+\emph{component proxy} of its own component. Note that a component proxy is a machine
+that is responsible for handling the tasks associated with the component (finding MOE and merging). To load balance communication and computation, the component proxies for each component are chosen randomly among the machines using a 
+suitable hash function (see \cite{topc18} for details).  Note that, in any phase, a component contains up
+to $n$ nodes, which might be spread across different machines; we use the term \emph{component part}
+to refer to all those nodes of the component that are held by the same machine. Hence, in any phase,
+every component is partitioned in to at most $k$ component parts. At the end of the algorithm each vertex
+has a label such that any two vertices have the same label if and only if they belong to the same connected
+component of $G$.
+
+Crucially, the algorithm relies on \emph{linear graph sketches} as a tool to enable communication-efficient
+merging of multiple components. Intuitively, a (random) linear sketch $\sketch_u$ of a node $u$'s
+graph neighborhood returns a sample chosen uniformly at random from $u$'s incident edges.
+Interestingly, such a linear sketch can be represented as matrices using only $\bigO{\polylog(n)}$
+bits~\cite{JowhariST11,McGregor14}. A crucial property of these sketches is that they are linear:
+that is, given sketches $\sketch_u$ and $\sketch_v$, the \emph{combined sketch} $\sketch_u + \sketch_v$
+(``+'' refers to matrix addition) has the property that, with high probability, it yields a random sample of the edges incident to
+$(u,v)$ in a graph where we have contracted the edge $(u,v)$ to a single node. 
+
+We now describe how to communicate these graph sketches in an efficient manner\footnote{Linear graph sketches require only $\tilde{O}(1)$ bits of shared randomness which costs
+only so much local computation cost and round complexity\cite{topc18}.}:
+consider a component $C$ that is split into $j$ parts $P_1,P_2,\dots,P_j$, the nodes of which
+are hosted at machines $M_1,M_2,\dots,M_j$. To find an outgoing edge for $C$, we first instruct each
+machine $M_i$ to construct a linear sketch of the graph neighborhood of each of the nodes in part $P_i$.
+Then, we sum up these $|P_i|$ sketches, yielding a sketch $\sketch_{P_i}$ for the neighborhood of part $P_i$. 
+To combine the sketches of the $j$ distinct parts, we now select a \emph{random component proxy}
+machine $M_{C,r}$ for the current component $C$ at round $r$.
+Next, machine $M_i$ sends $\sketch_{P_i}$ to machine $M_{C,r}$; note that this causes at most $k$ messages
+to be sent to the component proxy.\footnote{This requires $\tilde{\Theta}(n/k)$ bits of shared randomness, which can be achieved by having  one machine  generate required bits and subsequently broadcast them. This adds $\Tilde{O}(n/k)$ to the local computation and $\Tilde{O}(n/k^2)$ to the round complexity \cite{topc18}.} Finally, machine $M_{C,r}$ computes $\sketch_C = \sum_{i=1}^j \sketch_{P_i}$,
+and then uses $\sketch_C$ to sample an edge incident to some node in $C$, which, by construction, is guaranteed
+to have its endpoint in a distinct component $C'$. 
+
+At this point, each component proxy has sampled an inter-component edge
+inducing the edges of a \emph{component graph} $\mathcal{C}$ where each vertex corresponds to a component.
+To enable the efficient merging of components, the algorithm employs the distributed random ranking technique of~\cite{ChenP12}
+to break up any long paths of $\mathcal{C}$ into more manageable directed trees of depth $\bigO{\log n}$.
+To this end, each component chooses a rank independently
+and uniformly at random from $[0,1]$, and then (virtually) connects to its neighboring
+component (according to $\mathcal{C}$) via a (conceptual) directed edge if and only if the latter has a higher rank. 
+This process results in a collection of disjoint rooted trees, rooted at the node of highest (local) rank.
+
+The merging of the components of each tree $\mathcal{T}$ proceeds from the leaves upward (in parallel for each tree).
+In the first merging phase, each leaf $C_j$ of $\mathcal{T}$ merges with its parent $C'$ by relabeling the component
+labels of all of their nodes with the label of $C'$. Note that the proxy $M_{C_j}$ knows the labeling of $C'$,
+as it has computed the outgoing edge from a vertex in $C_j$ to a vertex in $C'$.
+Therefore, machine $M_{C_j}$ sends the label of $C_j$ to all the machines that hold a part of $C_j$.  This can be done in parallel (for all leaves of all trees) in $\softO{n/k^2}$ rounds.
+Repeating this merging procedure $\bigO{\log n}$ times, guarantees that each tree has been merged to a single component. 
+
+Finally, it can be shown that $\bigO{\log n}$ repetitions of the above process suffice to ensure that
+the components at the end of the last phase correspond to the connected components of the input graph $G$.
+
+\noindent \textbf{High computation cost of above algorithm.}
+The main reason for the high computation cost of the algorithm of \cite{topc18} is the way the algorithm computes
+the sketches. It uses the sketches of \cite{JowhariST11,McGregor14} which
+defines a vector $\vec{a}_v$ of length $\binom{n}{2}$ for each node $v$ and,
+with the appropriate choice of $\mathcal{O}(\log^2{n}) \times \binom{n}{2}$ matrix
+$M$, can be used to sample edges. However, doing so requires $\softOm{n^2}$ local
+computation time in order to evaluate $M\vec{a}_v$.
+
+\noindent \textbf{Modification to achieve $\softO{\sfrac{(m+n)}{k} + \Delta + k}$ computation complexity.}
+The main change needed is, rather than using the sketches of \cite{JowhariST11,McGregor14},
+we use the sketch of \cite{KingKT15} (in particular, their \textproc{TestOut} procedure) which also guarantees the same property, i.e., 
+finding an MOE with small communication cost. The local computation cost of this procedure
+is essentially linear in the size of the component. Rather than storing vectors
+of length $\binom{n}{2}$, these sketches utilize an \emph{odd hash function}. In
+essence, one of the machines (say the leader machine) determines a
+hash function $h:E \to \{0, 1\}$ which is then broadcast to the rest of the
+machines.  The hash function is very simple and requires choosing
+only two random numbers of $O(1)$ bits\cite{KingKT15}. Next each component
+uses this hash function to find an MOE as follows.
+Each node in a component part   evaluates $\sum_{\text{incident edges } e} h(e)
+\bmod{2}$ and this sum is  first aggregated among the nodes in a component part
+by the corresponding machine and then the sums of each part of the component
+is aggregated   to the corresponding component proxy machine. 
+If the sum is 1, we conclude with some constant probability
+$\varepsilon$ that an outgoing edge exists out of the component \cite{KingKT15}. By restricting the edges considered
+to be those within some range $[i, j]$, we can (via a routine similar to binary
+search) determine a minimum weight outgoing edge with constant probability. By
+repeating this process $\bigOm{\log{n}}$ times, we are able to determine the MOE
+with high probability for a component and by a union bound (over all components)
+determine the MOE of each component with high probability.
+
+By this modification, the local computation cost is linear in the number of edges
+assigned to a machine, i.e.,
+$\softO{\sfrac{(m+n)}{k} +\Delta + k}$.

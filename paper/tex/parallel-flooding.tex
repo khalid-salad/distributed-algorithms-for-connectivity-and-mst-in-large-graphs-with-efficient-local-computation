@@ -1,0 +1,89 @@
+\section{A Parallel Flooding Algorithm for Graph Connectivity}\label{sec:congest-connectivity}
+In this section we look at a parallel flooding algorithm to detect whether the input graph is connected and also detect the number of connected components.
+
+We first describe the algorithm from the point of view of individual nodes in a network (as implemented in the standard \textsc{Congest} model) in order to give the intuition behind the process. We subsequently explain how the $k$ machines can simulate this algorithm.
+
+Initially, each node chooses an ID in $[1,n^4]$ uniformly at random. 
+For any node $u$, denote the ID of the largest ID $u$ has seen so far as $\textrm{ID-max(u)}$ and initialize this to $u$'s ID. Each node initiates flooding of its ID, in parallel.  Subsequently, if $u$ receives a message containing a higher ID, then $u$ updates its $\textrm{ID-max(u)}$ and floods the new ID.
+
+The above process can be simulated by $k$ machines as follows. Each machine $M$ maintains an ordered list of each node located on the machine, sorted in descending order of ID. $M$ then goes through this list and simulates each node, one by one, as described previously. For a given node $u$ located on $M$, if $u$ has a neighbor $v$ located in machine $M'$, then $M$ sends the appropriate message to $M'$ to be processed.
+
+Let $NR$ refer to the number of rounds it takes for the above process to end
+with high probability. Set $NR = \bigO{n\log n/k + D}$.\footnote{In the course
+of the proof of \cref{lem:flooding-tc}, we derive this value. Furthermore, a
+careful analysis will give us exact values.} After $NR$ rounds, each machine
+$M$ aggregates IDs in $\textrm{ID-max(u)}$ for all $u$ located on $M$ into a
+list $\mathcal{L}(M)$. The number of IDs in $\mathcal{L}(M)$ indicates the number of distinct components in machine $M$.
+Each machine then sends $\mathcal{L}(M)$ to the machine
+with the lowest ID in the system, $M_1$. Machine $M_1$ aggregates all such lists
+and and counts the number of unique IDs, which is equivalent to the total number
+of connected components in the input graph. $M_{\mathrm{lowest}}$ subsequently
+broadcasts this number to all other machines.\footnote{While the above algorithm is Monte Carlo in nature, it can be converted into a Las Vegas style algorithm.}
+The following theorem captures the properties of this algorithm.
+
+\begin{theorem}
+    \label{thm:flooding-thm}
+With high probability, the above algorithm correctly counts the number of connected components with \\
+$T_{\ell} = \bigO{(m/k + \Delta\log n) \log n + k}$ and $T_c = \bigO{n\log n/k + D}$.
+\end{theorem}
+
+\begin{proof}
+    We first calculate $T_{\ell}$ and $T_c$ and subsequently argue about the correctness of the algorithm.
+    
+    In order to calculate $T_c$ and $T_{\ell}$, we first prove the following lemma, which will be used for both calculations.
+    
+    \begin{lemma}
+        \label{lem:num-higher-ids}
+    Consider $n$ nodes with IDs chosen uniformly at random from $[1,n^4]$. For any given node $u$, in the \textsc{Congest} model, the number of times it  broadcasts (locally to its neighbors) is $\bigO{\log n}$ with probability at least $1 - 1/n^2$.
+    \end{lemma}
+    
+    \begin{proof}
+    For a given node, the probability that at least one other node chooses the same ID as it is $1 - (1- 1/n^4)^n \leq 1/n^3$. By a union bound over all nodes, the probability that at least two nodes have the same ID is $\leq 1/n^2$. Thus, with high probability, all chosen IDs are unique.
+    
+    Assume, for the sake of analysis,
+    that a node $u$ sees each new ID one at a time (since
+    if it sees many IDs in one round only the largest ID
+    of them will matter). Since
+    the IDs are chosen uniformly at random, the IDs can be assumed
+    to come in a random permutation order.\footnote{To visualize this, imagine a path of nodes with $u$ at one end where $u$ receives the ID from node at distance $j$ from it in round $j+1$. Let $S$ be the set of IDs chosen by the other nodes. Because each node chooses its ID uniformly at random from $S$, the order in which $u$ receives the other IDs can be seen as a random permutation of the list formed by the elements of $S$.}
+    Let $X_i, 1 \leq i \leq n-1$, be the indicator random variable denoting whether the $i^{th}$ ID that $u$ sees (not including its own) causes it to initiate a new local broadcast (this will happen when it sees an ID that
+    is higher than the highest one it has seen till now).
+    Observe that $\prob{X_i = 1} = 1/i$ and $\prob{X_i = 0} = 1 - 1/i$. Therefore, $\expectation{X_i} = 1/i$. Let $X = \sum_{i=1}^{n-1} X_i$.
+    Now $\expectation{\sum_{i=1}^{n-1} X_i} = \sum_{i=1}^{n-1} \expectation{X_i} \leq 4 \log n$. Notice that the $X_i$'s are negatively associated\cite{DubhashiP09}. Thus, we can apply a Chernoff bound\cite{DubhashiP09} and get that $\prob{X > 6\expectation{X}} \leq 1/n^2$.
+    
+    Thus with probability $1 - 1/n^2$, for a given node $u$, the number of times it broadcasts is $\bigO{\log n}$. 
+    \end{proof}
+    
+    
+    We are now ready to calculate $T_{\ell}$ and $T_c$.
+    \begin{lemma}
+    The local computation complexity of the algorithm is $\bigO{(m/k + \Delta\log n) \log n + k}$ with high probability.
+    \end{lemma}
+    
+    \begin{proof}
+    
+    We utilize Lemma~\ref{lem:node-distribution-lemma} to bound the local computation complexity. As such, let us first consider running the algorithm on the input graph in the synchronous \textsc{Congest} model. Consider a single node $v_i$ with degree $d(v_i)$. For each value it hears through one of its edges, it must compare that value with the current maximum ID it has seen in $O(1)$ steps of local computation. By Lemma~\ref{lem:num-higher-ids}, each of its $d(v_i)$ neighbors sends it at most $O(\log n)$ values. Thus, $v_i$ performs $\bigO{d(v_i) \log n}$ steps of local computation to process all these messages.
+    
+    Now, once a value is processed, if the value is higher than $v_i$'s current maximum ID, $v_i$ updates its $\textrm{ID-max}$ and broadcasts this value to its $d(v_i)$ neighbors using $\bigO{d(v_i)}$ steps of local computation. By Lemma~\ref{lem:num-higher-ids}, there are at most $\bigO{\log n}$ values with high probability that $v_i$ will have to broadcast and thus $v_i$ takes an additional $\bigO{d(v_i) \log n}$ steps of local computation to complete these broadcasts.
+    
+	The maximum run time of any node is thus $\bigO{\Delta \log n}$ with high probability. Therefore, by using Lemma~\ref{lem:node-distribution-lemma} where the weights associated with each node correspond to the maximum run time on that node, with high probability, the local computation of any machine is $\bigO{\frac{1}{k}\left(\sum_{i=1}^n (d(v_i) \log n)\right) + \log n \cdot \Delta \log n} = \bigO{(m / k + \Delta \log n) \log n}$. Finally, there is an additional $k$ due to a machine possibly having to send/read inputs from all other machines resulting in a final local computation complexity of $\bigO{(m / k + \Delta \log n) \log n + k}$.
+    \end{proof}
+    
+    \begin{lemma}
+        \label{lem:flooding-tc}
+    The communication complexity of the algorithm is $\bigO{n\log n/k + D}$ with high probability.
+    \end{lemma}
+    
+    \begin{proof}
+    We bound the total number of broadcasts by $B$. In the \textsc{Congested Clique} model, a broadcast will take $\bigO{D}$ rounds to propagate \emph{over the edges of the input graph}, where $D$ is the diameter of the input graph.
+	By \cref{thm:more-acc-conversion-theorem}, we see that the total number of rounds in the $k$-machine model is $\bigO{B\log n/(kW) + D}$ with high probability, where $W$ is the bandwidth of each link in the $k$-machine model. As mentioned in Section~\ref{sec:model}, we assume that the bandwidth of each link is $\Theta(\log n)$, i.e., $W = \Theta(\log n)$.
+    
+    We show that $B = \bigO{n \log n}$ with high probability. 
+    By Lemma~\ref{lem:num-higher-ids}, the number of broadcasts originating at each node is at most $\bigO{\log n}$ with probability $1 - 1/n^2$. 
+    Taking a union bound over all nodes, we see that with probability $1 - 1/n$, every node initiates at most $\bigO{\log n}$ broadcasts. Thus, at most $\bigO{n \log n}$ broadcasts are initiated with high probability.
+    
+    Additionally, every machine $M$ communicates an additional at most $\bigO{n/k}$ labels with high probability, due to transmitting $\mathcal{L}(M)$, to machine $M_{\mathrm{lowest}}$. This is because, initially, each machine receives $\bigO{n/k}$ nodes with high probability, which acts as an upper bound on the number of labels eventually transmitted to $M_{\mathrm{lowest}}$. Thus, we get our desired value of $T_c$.
+    \end{proof}
+    
+    From the construction of the algorithm, it is clear to see that each node $u$ floods any ID it encounters which is higher than the current value of $\textrm{ID-max}$. For each connected component $f$, let $u_f$ be the node with the largest ID in $f$. For each component $f$, after $NR$ rounds, $u_f$ will be flooded to every machine with high probability. It is simple to see that once this has occurred, $M_{\mathrm{lowest}}$ will be able to correctly compute the number of connected components by counting the number of unique IDs from all $\mathcal{L}(M)$ seen.
+    \end{proof}
