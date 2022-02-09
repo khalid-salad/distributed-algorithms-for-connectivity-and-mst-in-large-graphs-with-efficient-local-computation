@@ -6,3 +6,8 @@ description: >-
   Khalid Hourani,
   William K. Moses Jr.,
   Gopal Pandurangan
+# show_downloads: ["true" or "false" (unquoted) to indicate whether to provide a download URL]
+# google_analytics: [Your Google Analytics tracking ID]
+# github:
+#   zip_url: http://example.com/download.zip
+#   another_url: another value
