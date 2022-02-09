@@ -1,4 +1,4 @@
-name: reveal-MD
+name: reveal-md
 on:
   push:
     branches: [ slides ]
@@ -14,5 +14,5 @@ jobs:
 
       - name: Make static slides in /docs
         run: |
-          mkdir -p docs
-          reveal-md slides.md --static /docs
+          mkdir -p ./docs
+          reveal-md slides.md --static ./docs
