@@ -1,4 +1,4 @@
-# Abstract
+## Abstract
 We study distributed algorithms for large-scale graphs, focusing on the
 fundamental problems of connectivity and minimum spanning tree (MST). We
 consider the $$k$$-machine model, a well-studied model for distributed
