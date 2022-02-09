@@ -33,7 +33,7 @@ present a deterministic filtering algorithm that has an improved
 round complexity of $$\tilde{\mathcal{O}}\left(n / k\right)$$ but local computation
 complexity of $$\tilde{\mathcal{O}}\left(m / k + n\right)$$. Next, we present two
 *deterministic* algorithms which are increasingly sophisticated
-implementations of the classical Bor\r{u}vka's algorithm, the last of which
+implementations of the classical Borůvka's algorithm, the last of which
 has round complexity $$\tilde{\mathcal{O}}\left(n / k\right)$$ and local computation
 complexity $$\tilde{\mathcal{O}}\left((m + n) / k + \Delta + k\right)$$. We finally
 present a *randomized* algorithm to find connected components with
