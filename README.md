@@ -1,3 +1,5 @@
+{% include mathjax.html %}
+
 # Distributed Algorithms for Connectivity and MST in Large Graphs with Efficient Local Computation
 
 We study distributed algorithms for large-scale graphs, focusing on the
