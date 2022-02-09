@@ -13,8 +13,13 @@ jobs:
           root_file: main.tex
           latexmk_shell_escape: true
           extra_system_packages: "py-pygments"
-      - name: Copy PDF
+      - name: Upload PDF Artifact
         uses: actions/upload-artifact@v2
         with:
           name: copy pdf
           path: paper/main.pdf
+      - name: Download PDF Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: main.pdf
+          path: paper/
