@@ -1,0 +1,16 @@
+name: reveal-MD
+on:
+  push:
+    branches: [ slides ]
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Install reaveal-md
+        run: npm install -g reveal-md
+
+      - name: Make static slides in /docs
+        run: reveal-md slides.md --static /docs
