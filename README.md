@@ -17,7 +17,7 @@ distributed algorithm. We posit a complexity measure called the *local
 computation cost* (denoted $$T_{\ell}$$) that measures the worst-case local
 computation cost among the machines.  A lower bound for $$T_{\ell}$$
 in our model is $$\Omega\left(\sfrac{(m+n)}{k} + \Delta + k\right)$$, while a
-lower bound on $$T_c$$ is $\Omega\left(\sfrac{n}{k^2}\right)$$ [Klauck et al., SODA 2015],
+lower bound on $$T_c$$ is $$\Omega\left(\sfrac{n}{k^2}\right)$$ [Klauck et al., SODA 2015],
 where $$m$$ is the number of edges and $$\Delta$$ is the maximum degree. Prior
 algorithms for connectivity and MST in the $$k$$-machine model [Klauck et al.,
 SODA 2015, Pandurangan et al., SPAA 2016] do not take into account local
@@ -28,7 +28,7 @@ In this paper, we study several distributed algorithms for connectivity and
 MST and analyze their performance with respect to *both* the computation and
 communication cost. In particular, we analyze a well-studied flooding
 algorithm for connectivity and connected components that takes
-$$\tilde{\mathcal{O}}\left(n/k + D\right)$$ rounds and $\tilde{\mathcal{O}}\left(m / k + \Delta + k\right)$$
+$$\tilde{\mathcal{O}}\left(n/k + D\right)$$ rounds and $$\tilde{\mathcal{O}}\left(m / k + \Delta + k\right)$$
 local computation time.[^$\tilde{\mathcal{O}}$ notation hides
 $$\operatorname{polylog}(n)$$ multiplicative and additive factors.] We then
 present a deterministic filtering algorithm that has an improved
