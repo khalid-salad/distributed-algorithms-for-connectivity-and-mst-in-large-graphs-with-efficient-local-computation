@@ -13,4 +13,4 @@ jobs:
         run: npm install -g reveal-md
 
       - name: Make static slides in /docs
-        run: reveal-md slides.md --static /docs
+        run: mkdir -p /docs && reveal-md slides.md --static /docs
