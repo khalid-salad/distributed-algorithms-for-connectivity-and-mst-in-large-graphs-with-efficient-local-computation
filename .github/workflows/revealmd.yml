@@ -9,8 +9,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
-      - name: Install reaveal-md
+      - name: Install reveal-md
         run: npm install -g reveal-md
 
       - name: Make static slides in /docs
-        run: mkdir -p /docs && reveal-md slides.md --static /docs
+        run: mkdir -p docs && reveal-md slides.md --static /docs
