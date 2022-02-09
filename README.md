@@ -1,5 +1,11 @@
+---
+layout: page
+title: Abstract
+published: true
+---
+
 <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-# Abstract
+
 We study distributed algorithms for large-scale graphs, focusing on the
 fundamental problems of connectivity and minimum spanning tree (MST). We
 consider the $k$-machine model, a well-studied model for distributed
