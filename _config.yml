@@ -1,7 +1,7 @@
 theme: jekyll-theme-cayman
 title: Distributed Algorithms for Connectivity and MST in Large Graphs with Efficient Local Computation
 tagline: ICDCN 2022
-description: >-
+author: >-
   Eric Ajieren,
   Khalid Hourani,
   William K. Moses Jr.,
