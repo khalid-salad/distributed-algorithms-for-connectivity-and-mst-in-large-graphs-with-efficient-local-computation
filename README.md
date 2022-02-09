@@ -29,7 +29,7 @@ MST and analyze their performance with respect to *both* the computation and
 communication cost. In particular, we analyze a well-studied flooding
 algorithm for connectivity and connected components that takes
 $$\tilde{\mathcal{O}}\left(n/k + D\right)$$ rounds and $$\tilde{\mathcal{O}}\left(m / k + \Delta + k\right)$$
-local computation time.[^1] We then
+local computation time.`[^1]`{=markdown} We then
 present a deterministic filtering algorithm that has an improved
 round complexity of $$\tilde{\mathcal{O}}\left(n / k\right)$$ but local computation
 complexity of $$\tilde{\mathcal{O}}\left(m / k + n\right)$$. Next, we present two
@@ -42,5 +42,5 @@ round complexity $$\tilde{\mathcal{O}}\left(n / k^2\right)$$ and local computati
 complexity $$\tilde{\mathcal{O}}\left((m + n) / k + \Delta + k\right)$$ that are
 both essentially optimal (up to polylogarithmic factors).
 
-[1]: $$\tilde{\mathcal{O}}$$ notation hides $$\operatorname{polylog}(n)$$ multiplicative 
+`[^1]:`{=markdown} $$\tilde{\mathcal{O}}$$ notation hides $$\operatorname{polylog}(n)$$ multiplicative 
 and additive factors.
