@@ -1,8 +1,9 @@
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 # Abstract
 We study distributed algorithms for large-scale graphs, focusing on the
 fundamental problems of connectivity and minimum spanning tree (MST). We
-consider the $k$-machine model, a well-studied model for distributed
-computing for large-scale graph computations, where $k \geq 2$ machines
+consider the $$k$$-machine model, a well-studied model for distributed
+computing for large-scale graph computations, where \(k \geq 2\) machines
 jointly perform computations on graphs with $n$ nodes (typically, $n \gg
 k$). The input graph is assumed to be initially randomly partitioned among
 the $k$ machines, a common implementation in many real-world systems.
