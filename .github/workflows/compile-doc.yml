@@ -17,9 +17,9 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: main.pdf
-          path: /
+          path: ./paper
       - name: Download PDF Artifact
         uses: actions/download-artifact@v2
         with:
           name: main.pdf
-          path: paper/
+          path: ./paper/
