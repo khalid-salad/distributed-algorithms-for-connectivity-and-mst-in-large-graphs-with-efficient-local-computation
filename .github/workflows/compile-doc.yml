@@ -19,11 +19,6 @@ jobs:
   build_presentation:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Git repository
-        uses: actions/checkout@v2
-        with:
-          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
-          fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
       - name: create reveal-md static presentation
       - uses: actions/setup-node@v2
       - run: mkdir -p ./slides/docs
