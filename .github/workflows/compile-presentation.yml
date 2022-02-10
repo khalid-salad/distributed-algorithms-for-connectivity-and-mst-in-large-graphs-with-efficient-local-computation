@@ -1,4 +1,4 @@
-name: Build LaTeX document
+name: Create Presentation
 on: [push]
 jobs:
   build_presentation:
@@ -9,7 +9,7 @@ jobs:
         with:
           persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
           fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
-      - name: Create static presentation
+      - name: create reveal-md static presentation
       - uses: actions/setup-node@v2
       - run: mkdir -p ./slides/docs
       - run: npm install -g reveal-md
