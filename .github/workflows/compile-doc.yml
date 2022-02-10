@@ -1,7 +1,7 @@
 name: Build LaTeX PDF and reveal-MD Slides
 on: [push]
 jobs:
-  build_latex:
+  latex:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Git repository
@@ -16,7 +16,7 @@ jobs:
           root_file: main.tex
           latexmk_shell_escape: true
           extra_system_packages: "py-pygments"
-  build_presentation:
+  reveal-md:
     runs-on: ubuntu-latest
     steps:
       - name: create reveal-md static presentation
@@ -26,6 +26,7 @@ jobs:
           reveal-md ./slides/slides.md --static ./slides/docs
   push_changes:
     runs-on: ubuntu-latest
+    needs: [latex, reveal-md]
     steps:
     - name: Commit files
       run: |
