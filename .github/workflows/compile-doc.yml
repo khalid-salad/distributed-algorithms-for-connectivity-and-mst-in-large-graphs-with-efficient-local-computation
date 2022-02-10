@@ -1,4 +1,4 @@
-name: Build LaTeX document
+name: Build LaTeX PDF and reveal-MD Slides
 on: [push]
 jobs:
   build_latex:
@@ -16,14 +16,30 @@ jobs:
           root_file: main.tex
           latexmk_shell_escape: true
           extra_system_packages: "py-pygments"
-      - name: Commit files
-        run: |
+  build_presentation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
+          fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
+      - name: create reveal-md static presentation
+      - uses: actions/setup-node@v2
+      - run: mkdir -p ./slides/docs
+      - run: npm install -g reveal-md
+      - run: reveal-md ./slides/slides.md --static ./slides/docs
+  push_changes:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Commit files
+      run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add ./paper/main.pdf
-          git commit -m "Added PDF" -a
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+          git add ./paper/main.pdf ./slides/docs/*
+          git commit -m "Added PDF and Presentation" -a
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}
