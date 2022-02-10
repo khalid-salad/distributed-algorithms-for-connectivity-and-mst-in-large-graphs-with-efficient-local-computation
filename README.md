@@ -7,7 +7,7 @@ jointly perform computations on graphs with $$n$$ nodes (typically, $$n \gg
 k$$). The input graph is assumed to be initially randomly partitioned among
 the $$k$$ machines, a common implementation in many real-world systems.
 Communication is point-to-point, and the goal is to minimize the number of
-\emph{communication rounds} (denoted $$T_c$$) of the computation.
+*communication rounds* (denoted $$T_c$$) of the computation.
 
 While communication is a significant factor that affects the time needed for
 large-scale computations, the *computation cost* incurred by the
