@@ -33,6 +33,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: [latex, reveal-md]
     steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
+          fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
       - name: Commit files
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
