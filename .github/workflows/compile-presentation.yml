@@ -1,0 +1,27 @@
+name: Build LaTeX document
+on: [push]
+jobs:
+  build_presentation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
+          fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
+      - name: Create static presentation
+      - uses: actions/setup-node@v2
+      - run: mkdir -p ./slides/docs
+      - run: npm install -g reveal-md
+      - run: reveal-md ./slides/slides.md --static ./slides/docs
+      - name: Commit files
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add ./slides/docs/*
+          git commit -m "Added Presentation" -a
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
