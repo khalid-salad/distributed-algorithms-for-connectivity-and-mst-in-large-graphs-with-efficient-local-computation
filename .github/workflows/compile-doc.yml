@@ -20,10 +20,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: create reveal-md static presentation
-      - uses: actions/setup-node@v2
-      - run: mkdir -p ./slides/docs
-      - run: npm install -g reveal-md
-      - run: reveal-md ./slides/slides.md --static ./slides/docs
+        run: |
+          mkdir -p ./slides/docs
+          npm install -g reveal-md
+          reveal-md ./slides/slides.md --static ./slides/docs
   push_changes:
     runs-on: ubuntu-latest
     steps:
